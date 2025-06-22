@@ -1,0 +1,27 @@
+{
+  "name": "vercel-serverless-auth",
+  "version": "1.0.0",
+  "description": "Vercel serverless authentication API",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "vercel build",
+    "deploy": "vercel --prod"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^7.5.0",
+    "validator": "^13.11.0"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.2",
+    "@types/jsonwebtoken": "^9.0.2",
+    "@types/node": "^20.5.0",
+    "@types/validator": "^13.11.1",
+    "typescript": "^5.1.6"
+  },
+  "keywords": ["vercel", "serverless", "auth", "api"],
+  "author": "",
+  "license": "MIT"
+}
