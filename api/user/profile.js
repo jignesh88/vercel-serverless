@@ -6,7 +6,7 @@ module.exports = async (req, res) => {
     // await connectDB();
 
     if (req.method === 'GET') {
-      return await getUsers();
+      return await getUsers(req, res);
     } else if (req.method === 'PUT') {
       return await updateProfile(req, res);
     } else {
@@ -18,15 +18,20 @@ module.exports = async (req, res) => {
   }
 };
 
-async function getUsers() {
+async function getUsers(req, res) {
   // Simulate fetching users from a database
-  return users.map(user => ({
+  const body =  users.map(user => ({
     id: user._id,
     email: user.email,
     name: user.name,
     createdAt: user.createdAt,
     updatedAt: user.updatedAt
   }));
+
+  res.status(200).json({
+    message: 'Users retrieved successfully',
+    users: body
+  });
 }
 
 async function getProfile(req, res) {
