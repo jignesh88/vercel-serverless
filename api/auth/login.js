@@ -1,5 +1,4 @@
-const { connectDB } = require('../../lib/db');
-const User = require('../../lib/models/User');
+const { findUserByEmail, comparePassword, userToJSON } = require('../../lib/staticData');
 const { generateToken } = require('../../lib/auth');
 
 module.exports = async (req, res) => {
@@ -8,8 +7,6 @@ module.exports = async (req, res) => {
   }
 
   try {
-    await connectDB();
-
     const { email, password } = req.body;
 
     if (!email || !password) {
@@ -18,14 +15,14 @@ module.exports = async (req, res) => {
       });
     }
 
-    const user = await User.findOne({ email });
+    const user = findUserByEmail(email);
     if (!user) {
       return res.status(401).json({ 
         error: 'Invalid email or password' 
       });
     }
 
-    const isValidPassword = await user.comparePassword(password);
+    const isValidPassword = await comparePassword(password, user.password);
     if (!isValidPassword) {
       return res.status(401).json({ 
         error: 'Invalid email or password' 
@@ -36,7 +33,7 @@ module.exports = async (req, res) => {
 
     res.status(200).json({
       message: 'Login successful',
-      user: user.toJSON(),
+      user: userToJSON(user),
       token
     });
 

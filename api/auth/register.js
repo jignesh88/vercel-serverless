@@ -1,5 +1,4 @@
-const { connectDB } = require('../../lib/db');
-const User = require('../../lib/models/User');
+const { createUser, userToJSON } = require('../../lib/staticData');
 const { generateToken } = require('../../lib/auth');
 
 module.exports = async (req, res) => {
@@ -8,8 +7,6 @@ module.exports = async (req, res) => {
   }
 
   try {
-    await connectDB();
-
     const { email, password, name } = req.body;
 
     if (!email || !password || !name) {
@@ -24,31 +21,27 @@ module.exports = async (req, res) => {
       });
     }
 
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(409).json({ 
-        error: 'User with this email already exists' 
-      });
-    }
-
-    const user = new User({ email, password, name });
-    await user.save();
-
+    const user = await createUser({ email, password, name });
     const token = generateToken(user._id);
 
     res.status(201).json({
       message: 'User registered successfully',
-      user: user.toJSON(),
+      user: userToJSON(user),
       token
     });
 
   } catch (error) {
     console.error('Registration error:', error);
     
-    if (error.name === 'ValidationError') {
+    if (error.message === 'Invalid email address') {
       return res.status(400).json({ 
-        error: 'Invalid input data',
-        details: Object.values(error.errors).map(e => e.message)
+        error: 'Invalid email address'
+      });
+    }
+    
+    if (error.message === 'User with this email already exists') {
+      return res.status(409).json({ 
+        error: 'User with this email already exists' 
       });
     }
 
