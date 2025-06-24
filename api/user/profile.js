@@ -20,7 +20,7 @@ module.exports = async (req, res) => {
 
 async function getUsers(req, res) {
   // Simulate fetching users from a database
-  const body =  users.map(user => ({
+  const body =  users.users.map(user => ({
     id: user._id,
     email: user.email,
     name: user.name,
