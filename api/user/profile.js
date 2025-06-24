@@ -1,13 +1,12 @@
-const { connectDB } = require('../../lib/db');
-const User = require('../../lib/models/User');
+const users = require('../../lib/staticData');
 const { authenticateToken } = require('../../lib/auth');
 
 module.exports = async (req, res) => {
   try {
-    await connectDB();
+    // await connectDB();
 
     if (req.method === 'GET') {
-      return await getProfile(req, res);
+      return await getUsers(req, res);
     } else if (req.method === 'PUT') {
       return await updateProfile(req, res);
     } else {
@@ -19,22 +18,27 @@ module.exports = async (req, res) => {
   }
 };
 
-async function getProfile(req, res) {
-  authenticateToken(req, res, async () => {
-    try {
-      const user = await User.findById(req.userId);
-      if (!user) {
-        return res.status(404).json({ error: 'User not found' });
-      }
+async function getUsers() {
+  // Simulate fetching users from a database
+  return users.map(user => ({
+    id: user._id,
+    email: user.email,
+    name: user.name,
+    createdAt: user.createdAt,
+    updatedAt: user.updatedAt
+  }));
+}
 
-      res.status(200).json({
-        message: 'Profile retrieved successfully',
-        user: user.toJSON()
-      });
-    } catch (error) {
-      console.error('Get profile error:', error);
-      res.status(500).json({ error: 'Internal server error' });
-    }
+async function getProfile(req, res) {
+  
+  const user = await users.findById(req.userId);
+  if (!user) {
+    return res.status(404).json({ error: 'User not found' });
+  }
+
+  res.status(200).json({
+    message: 'Profile retrieved successfully',
+    user: user.toJSON()
   });
 }
 
