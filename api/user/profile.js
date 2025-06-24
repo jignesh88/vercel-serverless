@@ -6,7 +6,7 @@ module.exports = async (req, res) => {
     // await connectDB();
 
     if (req.method === 'GET') {
-      return await getUsers(req, res);
+      return await getUsers();
     } else if (req.method === 'PUT') {
       return await updateProfile(req, res);
     } else {
